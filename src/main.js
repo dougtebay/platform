@@ -1,3 +1,6 @@
 import { Level } from './Level'
+import { Display } from './Display'
 
-var level = new Level()
+window.onload = function () {
+    new Display(new Level())
+}

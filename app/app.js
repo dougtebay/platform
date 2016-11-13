@@ -1,18 +1,92 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var Block = function Block() {
     _classCallCheck(this, Block);
+
+    this.type = 'block';
 };
 
-//
 exports.Block = Block;
 
 },{}],2:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+var Display = (function () {
+    function Display(level) {
+        _classCallCheck(this, Display);
+
+        this.level = level;
+        this.scale = 20;
+        this.app = this.makeElement('div', 'app');
+        this.appendElement(this.app, document.body);
+        this.background = this.makeElement('table', 'background');
+        this.appendElement(this.background, this.app);
+        this.renderBackground();
+        this.actors = this.makeElement('div', 'actors');
+        this.appendElement(this.actors, this.app);
+        this.refreshActors();
+    }
+
+    Display.prototype.makeElement = function makeElement(name, className) {
+        var e = document.createElement(name);
+        if (className) {
+            e.className = className;
+        }
+        return e;
+    };
+
+    Display.prototype.appendElement = function appendElement(child, parent) {
+        parent.appendChild(child);
+    };
+
+    Display.prototype.renderBackground = function renderBackground() {
+        var self = this;
+        this.level.background.forEach(function (row) {
+            var tr = this.makeElement('tr');
+            this.appendElement(tr, this.background);
+            row.forEach(function (e) {
+                var td = this.makeElement('td', e.type);
+                this.appendElement(td, tr);
+            }, self);
+        }, self);
+    };
+
+    Display.prototype.renderActors = function renderActors() {
+        var self = this;
+        this.level.actors.forEach(function (actor) {
+            var e = self.makeElement('div', actor.type);
+            e.style.top = String(actor.position.y * this.scale) + 'px';
+            e.style.left = String(actor.position.x * this.scale) + 'px';
+            self.appendElement(e, self.actors);
+        }, self);
+    };
+
+    Display.prototype.clearActors = function clearActors() {
+        while (this.actors.firstChild) {
+            this.actors.removeChild(this.actors.firstChild);
+        }
+    };
+
+    Display.prototype.refreshActors = function refreshActors() {
+        this.clearActors();
+        this.renderActors();
+    };
+
+    return Display;
+})();
+
+exports.Display = Display;
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -55,49 +129,54 @@ var Level = (function () {
 
 exports.Level = Level;
 
-},{"./Vector":5,"./constants":6}],3:[function(require,module,exports){
-"use strict";
+},{"./Vector":6,"./constants":7}],4:[function(require,module,exports){
+'use strict';
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Player = function Player() {
+var Player = function Player(position) {
     _classCallCheck(this, Player);
+
+    this.type = 'player';
+    this.position = position;
 };
 
-//
 exports.Player = Player;
 
-},{}],4:[function(require,module,exports){
-"use strict";
+},{}],5:[function(require,module,exports){
+'use strict';
 
 exports.__esModule = true;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var Space = function Space() {
     _classCallCheck(this, Space);
+
+    this.type = 'space';
 };
 
-//
 exports.Space = Space;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Vector = function Vector() {
+var Vector = function Vector(x, y) {
     _classCallCheck(this, Vector);
+
+    this.x = x;
+    this.y = y;
 };
 
-//
 exports.Vector = Vector;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -126,12 +205,15 @@ exports.LEVEL_MAP = LEVEL_MAP;
 exports.ACTORS = ACTORS;
 exports.BACKGROUND = BACKGROUND;
 
-},{"./Block":1,"./Player":3,"./Space":4}],7:[function(require,module,exports){
+},{"./Block":1,"./Player":4,"./Space":5}],8:[function(require,module,exports){
 'use strict';
 
 var _Level = require('./Level');
 
-var level = new _Level.Level();
-debugger;
+var _Display = require('./Display');
 
-},{"./Level":2}]},{},[7]);
+window.onload = function () {
+    new _Display.Display(new _Level.Level());
+};
+
+},{"./Display":2,"./Level":3}]},{},[8]);
