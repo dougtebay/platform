@@ -22,4 +22,10 @@ const BACKGROUND = {
     'x': Block
 }
 
-export { LEVEL_MAP, ACTORS, BACKGROUND }
+const KEY_CODES = {
+    37: 'left',
+    38: 'up',
+    39: 'right'
+}
+
+export { LEVEL_MAP, ACTORS, BACKGROUND, KEY_CODES }

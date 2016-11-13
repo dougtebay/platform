@@ -15,9 +15,7 @@ class Display {
 
     makeElement (name, className) {
         var e = document.createElement(name)
-        if (className) {
-            e.className = className
-        }
+        if (className) e.className = className
         return e
     }
 

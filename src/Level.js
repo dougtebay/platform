@@ -27,6 +27,10 @@ class Level {
         })
     }
 
+    obstacleAt (position) {
+        return this.background[position.y][position.x].type !== 'space'
+    }
+
 }
 
 export { Level }

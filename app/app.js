@@ -5,6 +5,61 @@ exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var _constants = require('./constants');
+
+var Animator = (function () {
+    function Animator(display) {
+        _classCallCheck(this, Animator);
+
+        this.display = display;
+        this.level = this.display.level;
+        this.keysPressed = {};
+        this.addListeners();
+        this.requestFrame();
+    }
+
+    Animator.prototype.addListeners = function addListeners() {
+        addEventListener('keydown', this.handler.bind(this));
+        addEventListener('keyup', this.handler.bind(this));
+    };
+
+    Animator.prototype.handler = function handler() {
+        if (_constants.KEY_CODES.hasOwnProperty(event.keyCode)) {
+            var keyDown = event.type == 'keydown';
+            this.keysPressed[_constants.KEY_CODES[event.keyCode]] = keyDown;
+            event.preventDefault();
+        }
+    };
+
+    Animator.prototype.requestFrame = function requestFrame() {
+        requestAnimationFrame(this.frame.bind(this));
+    };
+
+    Animator.prototype.frame = function frame() {
+        this.animate();
+        this.display.refreshActors();
+        requestAnimationFrame(this.frame.bind(this));
+    };
+
+    Animator.prototype.animate = function animate() {
+        this.level.actors.forEach(function (actor) {
+            if (this.keysPressed.left) actor.moveLeft(this.level);
+            if (this.keysPressed.right) actor.moveRight(this.level);
+        }, this);
+    };
+
+    return Animator;
+})();
+
+exports.Animator = Animator;
+
+},{"./constants":8}],2:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 var Block = function Block() {
     _classCallCheck(this, Block);
 
@@ -13,7 +68,7 @@ var Block = function Block() {
 
 exports.Block = Block;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -38,9 +93,7 @@ var Display = (function () {
 
     Display.prototype.makeElement = function makeElement(name, className) {
         var e = document.createElement(name);
-        if (className) {
-            e.className = className;
-        }
+        if (className) e.className = className;
         return e;
     };
 
@@ -86,7 +139,7 @@ var Display = (function () {
 
 exports.Display = Display;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -124,28 +177,48 @@ var Level = (function () {
         });
     };
 
+    Level.prototype.obstacleAt = function obstacleAt(position) {
+        return this.background[position.y][position.x].type !== 'space';
+    };
+
     return Level;
 })();
 
 exports.Level = Level;
 
-},{"./Vector":6,"./constants":7}],4:[function(require,module,exports){
+},{"./Vector":7,"./constants":8}],5:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Player = function Player(position) {
-    _classCallCheck(this, Player);
+var _Vector = require('./Vector');
 
-    this.type = 'player';
-    this.position = position;
-};
+var Player = (function () {
+    function Player(position) {
+        _classCallCheck(this, Player);
+
+        this.type = 'player';
+        this.position = position;
+    }
+
+    Player.prototype.moveLeft = function moveLeft(level) {
+        var nextPosition = new _Vector.Vector(Math.floor(this.position.x), Math.floor(this.position.y));
+        if (!level.obstacleAt(nextPosition)) this.position.x -= 0.2;
+    };
+
+    Player.prototype.moveRight = function moveRight(level) {
+        var nextPosition = new _Vector.Vector(Math.ceil(this.position.x), Math.floor(this.position.y));
+        if (!level.obstacleAt(nextPosition)) this.position.x += 0.2;
+    };
+
+    return Player;
+})();
 
 exports.Player = Player;
 
-},{}],5:[function(require,module,exports){
+},{"./Vector":7}],6:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -160,7 +233,7 @@ var Space = function Space() {
 
 exports.Space = Space;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -176,7 +249,7 @@ var Vector = function Vector(x, y) {
 
 exports.Vector = Vector;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -201,19 +274,28 @@ var BACKGROUND = {
     'x': _Block.Block
 };
 
+var KEY_CODES = {
+    37: 'left',
+    38: 'up',
+    39: 'right'
+};
+
 exports.LEVEL_MAP = LEVEL_MAP;
 exports.ACTORS = ACTORS;
 exports.BACKGROUND = BACKGROUND;
+exports.KEY_CODES = KEY_CODES;
 
-},{"./Block":1,"./Player":4,"./Space":5}],8:[function(require,module,exports){
+},{"./Block":2,"./Player":5,"./Space":6}],9:[function(require,module,exports){
 'use strict';
 
 var _Level = require('./Level');
 
 var _Display = require('./Display');
 
+var _Animator = require('./Animator');
+
 window.onload = function () {
-    new _Display.Display(new _Level.Level());
+    new _Animator.Animator(new _Display.Display(new _Level.Level()));
 };
 
-},{"./Display":2,"./Level":3}]},{},[8]);
+},{"./Animator":1,"./Display":3,"./Level":4}]},{},[9]);
