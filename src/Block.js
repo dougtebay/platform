@@ -1,9 +1,7 @@
 class Block {
-
-    constructor () {
-        this.type = 'block'
+    constructor() {
+        this.type = 'block';
     }
-
 }
 
-export { Block }
+export default Block;

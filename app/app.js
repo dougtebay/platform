@@ -42,16 +42,19 @@ var Animator = (function () {
     };
 
     Animator.prototype.animate = function animate() {
+        var _this = this;
+
         this.level.actors.forEach(function (actor) {
-            if (this.keysPressed.left) actor.moveLeft(this.level);
-            if (this.keysPressed.right) actor.moveRight(this.level);
-        }, this);
+            if (_this.keysPressed.left) actor.moveLeft(_this.level);
+            if (_this.keysPressed.right) actor.moveRight(_this.level);
+        });
     };
 
     return Animator;
 })();
 
-exports.Animator = Animator;
+exports['default'] = Animator;
+module.exports = exports['default'];
 
 },{"./constants":8}],2:[function(require,module,exports){
 'use strict';
@@ -66,7 +69,8 @@ var Block = function Block() {
     this.type = 'block';
 };
 
-exports.Block = Block;
+exports['default'] = Block;
+module.exports = exports['default'];
 
 },{}],3:[function(require,module,exports){
 'use strict';
@@ -102,25 +106,27 @@ var Display = (function () {
     };
 
     Display.prototype.renderBackground = function renderBackground() {
-        var self = this;
+        var _this = this;
+
         this.level.background.forEach(function (row) {
-            var tr = this.makeElement('tr');
-            this.appendElement(tr, this.background);
+            var tr = _this.makeElement('tr');
+            _this.appendElement(tr, _this.background);
             row.forEach(function (e) {
-                var td = this.makeElement('td', e.type);
-                this.appendElement(td, tr);
-            }, self);
-        }, self);
+                var td = _this.makeElement('td', e.type);
+                _this.appendElement(td, tr);
+            });
+        });
     };
 
     Display.prototype.renderActors = function renderActors() {
-        var self = this;
+        var _this2 = this;
+
         this.level.actors.forEach(function (actor) {
-            var e = self.makeElement('div', actor.type);
-            e.style.top = String(actor.position.y * this.scale) + 'px';
-            e.style.left = String(actor.position.x * this.scale) + 'px';
-            self.appendElement(e, self.actors);
-        }, self);
+            var e = _this2.makeElement('div', actor.type);
+            e.style.top = String(actor.position.y * _this2.scale) + 'px';
+            e.style.left = String(actor.position.x * _this2.scale) + 'px';
+            _this2.appendElement(e, _this2.actors);
+        });
     };
 
     Display.prototype.clearActors = function clearActors() {
@@ -137,16 +143,21 @@ var Display = (function () {
     return Display;
 })();
 
-exports.Display = Display;
+exports['default'] = Display;
+module.exports = exports['default'];
 
 },{}],4:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _Vector = require('./Vector');
+
+var _Vector2 = _interopRequireDefault(_Vector);
 
 var _constants = require('./constants');
 
@@ -170,7 +181,7 @@ var Level = (function () {
                 if (typeof obj[e] === 'function' && obj.type === 'static') {
                     levelRow.push(new obj[e]());
                 } else if (typeof obj[e] === 'function' && obj.type === 'dynamic') {
-                    arr.push(new obj[e](new _Vector.Vector(x, y)));
+                    arr.push(new obj[e](new _Vector2['default'](x, y)));
                 }
             });
             if (levelRow.length > 0) arr.push(levelRow);
@@ -184,16 +195,21 @@ var Level = (function () {
     return Level;
 })();
 
-exports.Level = Level;
+exports['default'] = Level;
+module.exports = exports['default'];
 
 },{"./Vector":7,"./constants":8}],5:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _Vector = require('./Vector');
+
+var _Vector2 = _interopRequireDefault(_Vector);
 
 var Player = (function () {
     function Player(position) {
@@ -204,19 +220,20 @@ var Player = (function () {
     }
 
     Player.prototype.moveLeft = function moveLeft(level) {
-        var nextPosition = new _Vector.Vector(Math.floor(this.position.x), Math.floor(this.position.y));
+        var nextPosition = new _Vector2['default'](Math.floor(this.position.x), Math.floor(this.position.y));
         if (!level.obstacleAt(nextPosition)) this.position.x -= 0.2;
     };
 
     Player.prototype.moveRight = function moveRight(level) {
-        var nextPosition = new _Vector.Vector(Math.ceil(this.position.x), Math.floor(this.position.y));
+        var nextPosition = new _Vector2['default'](Math.ceil(this.position.x), Math.floor(this.position.y));
         if (!level.obstacleAt(nextPosition)) this.position.x += 0.2;
     };
 
     return Player;
 })();
 
-exports.Player = Player;
+exports['default'] = Player;
+module.exports = exports['default'];
 
 },{"./Vector":7}],6:[function(require,module,exports){
 'use strict';
@@ -231,7 +248,8 @@ var Space = function Space() {
     this.type = 'space';
 };
 
-exports.Space = Space;
+exports['default'] = Space;
+module.exports = exports['default'];
 
 },{}],7:[function(require,module,exports){
 "use strict";
@@ -247,31 +265,40 @@ var Vector = function Vector(x, y) {
     this.y = y;
 };
 
-exports.Vector = Vector;
+exports["default"] = Vector;
+module.exports = exports["default"];
 
 },{}],8:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 var _Space = require('./Space');
+
+var _Space2 = _interopRequireDefault(_Space);
 
 var _Block = require('./Block');
 
+var _Block2 = _interopRequireDefault(_Block);
+
 var _Player = require('./Player');
+
+var _Player2 = _interopRequireDefault(_Player);
 
 var LEVEL_MAP = ['          ', '          ', ' x  @   x ', ' xxxxxxxx ', '          '];
 
 var ACTORS = {
     'type': 'dynamic',
-    '@': _Player.Player
+    '@': _Player2['default']
 };
 
 var BACKGROUND = {
     'type': 'static',
-    '@': _Space.Space,
-    ' ': _Space.Space,
-    'x': _Block.Block
+    '@': _Space2['default'],
+    ' ': _Space2['default'],
+    'x': _Block2['default']
 };
 
 var KEY_CODES = {
@@ -288,14 +315,22 @@ exports.KEY_CODES = KEY_CODES;
 },{"./Block":2,"./Player":5,"./Space":6}],9:[function(require,module,exports){
 'use strict';
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 var _Level = require('./Level');
+
+var _Level2 = _interopRequireDefault(_Level);
 
 var _Display = require('./Display');
 
+var _Display2 = _interopRequireDefault(_Display);
+
 var _Animator = require('./Animator');
 
+var _Animator2 = _interopRequireDefault(_Animator);
+
 window.onload = function () {
-    new _Animator.Animator(new _Display.Display(new _Level.Level()));
+    new _Animator2['default'](new _Display2['default'](new _Level2['default']()));
 };
 
 },{"./Animator":1,"./Display":3,"./Level":4}]},{},[9]);

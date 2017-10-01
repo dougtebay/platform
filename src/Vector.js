@@ -1,10 +1,8 @@
 class Vector {
-
-    constructor (x, y) {
-        this.x = x
-        this.y = y
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
     }
-
 }
 
-export { Vector }
+export default Vector;

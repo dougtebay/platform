@@ -1,9 +1,7 @@
 class Space {
-
-    constructor () {
-        this.type = 'space'
+    constructor() {
+        this.type = 'space';
     }
-
 }
 
-export { Space }
+export default Space;
