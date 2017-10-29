@@ -1,32 +1,52 @@
 import Vector from './Vector';
-import { LEVEL_MAP, ACTORS, BACKGROUND } from './constants';
+import { LEVEL_PLAN, LEVEL_ELEMENTS } from './constants';
 
 class Level {
     constructor() {
-        this.width = LEVEL_MAP[0].length;
-        this.height = LEVEL_MAP.length;
+        this.width = LEVEL_PLAN[0].length;
+        this.height = LEVEL_PLAN.length;
         this.actors = [];
         this.background = [];
-        this.populate(this.background, BACKGROUND);
-        this.populate(this.actors, ACTORS);
+        this.populate();
     }
 
-    populate(arr, obj) {
-        var levelRow
-        LEVEL_MAP.forEach((row, y) => {
-            levelRow = [];
-            row.split('').forEach((e, x) => {
-                if (typeof obj[e] === 'function' && obj.type === 'static') {
-                    levelRow.push(new obj[e]());
-                } else if (typeof obj[e] === 'function' && obj.type === 'dynamic') {
-                    arr.push(new obj[e](new Vector(x, y)));
+    populate() {
+        LEVEL_PLAN.forEach((planRow, y) => {
+            let row = planRow.split('').reduce((row, square, x) => {
+                let element = LEVEL_ELEMENTS[square];
+
+                if (element.type === 'actor') {
+                    this.addActor(element, new Vector(x, y));
                 }
-            });
-        if (levelRow.length > 0) arr.push(levelRow);
+
+                let background = this.addBackground(element);
+                row.push(background);
+
+                return row;
+            }, []);
+            this.background.push(row);
         });
     }
 
-    obstacleAt(position) {
+    addBackground(element) {
+        if (element.type !== 'background') {
+            let space = this.getSpace();
+
+            return new space;
+        }
+
+        return new element.class;
+    }
+
+    addActor(element, vector) {
+        this.actors.push(new element.class(vector));
+    }
+
+    getSpace() {
+        return LEVEL_ELEMENTS[' '].class;
+    }
+
+    hasObstacleAt(position) {
         return this.background[position.y][position.x].type !== 'space';
     }
 }

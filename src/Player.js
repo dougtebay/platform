@@ -8,12 +8,12 @@ class Player {
 
     moveLeft(level) {
         var nextPosition = new Vector(Math.floor(this.position.x), Math.floor(this.position.y));
-        if (!level.obstacleAt(nextPosition)) this.position.x -= 0.2;
+        if (!level.hasObstacleAt(nextPosition)) this.position.x -= 0.2;
     }
 
     moveRight(level) {
         var nextPosition = new Vector(Math.ceil(this.position.x), Math.floor(this.position.y));
-        if (!level.obstacleAt(nextPosition)) this.position.x += 0.2;
+        if (!level.hasObstacleAt(nextPosition)) this.position.x += 0.2;
     }
 }
 

@@ -165,30 +165,52 @@ var Level = (function () {
     function Level() {
         _classCallCheck(this, Level);
 
-        this.width = _constants.LEVEL_MAP[0].length;
-        this.height = _constants.LEVEL_MAP.length;
+        this.width = _constants.LEVEL_PLAN[0].length;
+        this.height = _constants.LEVEL_PLAN.length;
         this.actors = [];
         this.background = [];
-        this.populate(this.background, _constants.BACKGROUND);
-        this.populate(this.actors, _constants.ACTORS);
+        this.populate();
     }
 
-    Level.prototype.populate = function populate(arr, obj) {
-        var levelRow;
-        _constants.LEVEL_MAP.forEach(function (row, y) {
-            levelRow = [];
-            row.split('').forEach(function (e, x) {
-                if (typeof obj[e] === 'function' && obj.type === 'static') {
-                    levelRow.push(new obj[e]());
-                } else if (typeof obj[e] === 'function' && obj.type === 'dynamic') {
-                    arr.push(new obj[e](new _Vector2['default'](x, y)));
+    Level.prototype.populate = function populate() {
+        var _this = this;
+
+        _constants.LEVEL_PLAN.forEach(function (planRow, y) {
+            var row = planRow.split('').reduce(function (row, square, x) {
+                var element = _constants.LEVEL_ELEMENTS[square];
+
+                if (element.type === 'actor') {
+                    _this.addActor(element, new _Vector2['default'](x, y));
                 }
-            });
-            if (levelRow.length > 0) arr.push(levelRow);
+
+                var background = _this.addBackground(element);
+                row.push(background);
+
+                return row;
+            }, []);
+            _this.background.push(row);
         });
     };
 
-    Level.prototype.obstacleAt = function obstacleAt(position) {
+    Level.prototype.addBackground = function addBackground(element) {
+        if (element.type !== 'background') {
+            var space = this.getSpace();
+
+            return new space();
+        }
+
+        return new element['class']();
+    };
+
+    Level.prototype.addActor = function addActor(element, vector) {
+        this.actors.push(new element['class'](vector));
+    };
+
+    Level.prototype.getSpace = function getSpace() {
+        return _constants.LEVEL_ELEMENTS[' ']['class'];
+    };
+
+    Level.prototype.hasObstacleAt = function hasObstacleAt(position) {
         return this.background[position.y][position.x].type !== 'space';
     };
 
@@ -221,12 +243,12 @@ var Player = (function () {
 
     Player.prototype.moveLeft = function moveLeft(level) {
         var nextPosition = new _Vector2['default'](Math.floor(this.position.x), Math.floor(this.position.y));
-        if (!level.obstacleAt(nextPosition)) this.position.x -= 0.2;
+        if (!level.hasObstacleAt(nextPosition)) this.position.x -= 0.2;
     };
 
     Player.prototype.moveRight = function moveRight(level) {
         var nextPosition = new _Vector2['default'](Math.ceil(this.position.x), Math.floor(this.position.y));
-        if (!level.obstacleAt(nextPosition)) this.position.x += 0.2;
+        if (!level.hasObstacleAt(nextPosition)) this.position.x += 0.2;
     };
 
     return Player;
@@ -287,18 +309,12 @@ var _Player = require('./Player');
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var LEVEL_MAP = ['          ', '          ', ' x  @   x ', ' xxxxxxxx ', '          '];
+var LEVEL_PLAN = ['          ', '          ', ' x  @   x ', ' xxxxxxxx ', '          '];
 
-var ACTORS = {
-    'type': 'dynamic',
-    '@': _Player2['default']
-};
-
-var BACKGROUND = {
-    'type': 'static',
-    '@': _Space2['default'],
-    ' ': _Space2['default'],
-    'x': _Block2['default']
+var LEVEL_ELEMENTS = {
+    '@': { type: 'actor', 'class': _Player2['default'] },
+    'x': { type: 'background', 'class': _Block2['default'] },
+    ' ': { type: 'background', 'class': _Space2['default'] }
 };
 
 var KEY_CODES = {
@@ -307,9 +323,8 @@ var KEY_CODES = {
     39: 'right'
 };
 
-exports.LEVEL_MAP = LEVEL_MAP;
-exports.ACTORS = ACTORS;
-exports.BACKGROUND = BACKGROUND;
+exports.LEVEL_PLAN = LEVEL_PLAN;
+exports.LEVEL_ELEMENTS = LEVEL_ELEMENTS;
 exports.KEY_CODES = KEY_CODES;
 
 },{"./Block":2,"./Player":5,"./Space":6}],9:[function(require,module,exports){

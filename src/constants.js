@@ -2,7 +2,7 @@ import Space from './Space';
 import Block from './Block';
 import Player from './Player';
 
-const LEVEL_MAP = [
+const LEVEL_PLAN = [
     '          ',
     '          ',
     ' x  @   x ',
@@ -10,16 +10,10 @@ const LEVEL_MAP = [
     '          '
 ]
 
-const ACTORS = {
-    'type': 'dynamic',
-    '@': Player
-}
-
-const BACKGROUND = {
-    'type': 'static',
-    '@': Space,
-    ' ': Space,
-    'x': Block
+const LEVEL_ELEMENTS = {
+    '@': { type: 'actor', class: Player },
+    'x': { type: 'background', class: Block },
+    ' ': { type: 'background', class: Space }
 }
 
 const KEY_CODES = {
@@ -28,4 +22,4 @@ const KEY_CODES = {
     39: 'right'
 }
 
-export { LEVEL_MAP, ACTORS, BACKGROUND, KEY_CODES }
+export { LEVEL_PLAN, LEVEL_ELEMENTS, KEY_CODES }
