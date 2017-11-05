@@ -7,22 +7,16 @@
 }
 
 .player {
-    width: 20px;
-    height: 20px;
     position: absolute;
     background-color: lightgray;
 }
 
 .space {
-    width: 20px;
-    height: 20px;
     padding: 0px;
     background-color: black;
 }
 
 .block {
-    width: 20px;
-    height: 20px;
     padding: 0px;
     background-color: gray;
 }

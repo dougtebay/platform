@@ -5,26 +5,25 @@ class Level {
     constructor() {
         this.width = LEVEL_PLAN[0].length;
         this.height = LEVEL_PLAN.length;
-        this.actors = [];
         this.background = [];
+        this.actors = [];
         this.populate();
     }
 
     populate() {
-        LEVEL_PLAN.forEach((planRow, y) => {
-            let row = planRow.split('').reduce((row, square, x) => {
+        LEVEL_PLAN.forEach((row, y) => {
+            let backgroundRow = row.split('').reduce((row, square, x) => {
                 let element = LEVEL_ELEMENTS[square];
 
                 if (element.type === 'actor') {
                     this.addActor(element, new Vector(x, y));
                 }
 
-                let background = this.addBackground(element);
-                row.push(background);
+                row.push(this.addBackground(element));
 
                 return row;
             }, []);
-            this.background.push(row);
+            this.background.push(backgroundRow);
         });
     }
 

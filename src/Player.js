@@ -4,6 +4,8 @@ class Player {
     constructor(position) {
         this.type = 'player';
         this.position = position;
+        this.size = new Vector(1, 1);
+        this.speed = new Vector(0, 0);
     }
 
     moveLeft(level) {
